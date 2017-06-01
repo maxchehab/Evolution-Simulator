@@ -1,0 +1,259 @@
+<html>
+
+<head>
+    <title>Evolution Simulator</title>
+    <link href="https://fonts.googleapis.com/css?family=Acme|Roboto" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        div#creature-data h1 {
+            text-decoration: underline;
+        }
+
+        #next-creature-button {
+            display: none;
+        }
+
+        #setup button,
+        #data-process button {
+            border: aliceblue 4px solid;
+            border-radius: 5px;
+            float: left;
+            margin-top: 15px;
+            margin-bottom: 36px;
+        }
+
+
+
+        .interstitial-wrapper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .resources {
+            display: none;
+        }
+
+        .overlay {
+            z-index: 999;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        div#creature-data {
+            cursor: default;
+            text-transform: uppercase;
+            position: fixed;
+            left: 0;
+            width: 350px;
+            color: #fff;
+            background-color: #6496c8;
+            text-shadow: -1px 1px #417cb8;
+            border: none;
+            display: none;
+            margin: 10px;
+            padding: 4px 24px;
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.8;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        #setup input {
+            display: inline-block;
+            float: right;
+        }
+
+        #data-process {
+            display: none;
+        }
+
+        #setup {
+            display: block;
+        }
+
+        #setup,
+        #data-process {
+
+            max-height: 90vh;
+            position: fixed;
+            overflow-y: auto;
+            /* center the element */
+            right: 0;
+            left: 0;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 10px;
+            /* give it dimensions */
+            min-height: 10em;
+            width: 50%;
+
+
+            cursor: default;
+            text-transform: uppercase;
+            color: #fff;
+            background-color: #6496c8;
+            border: none;
+            padding: 4px 24px;
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.8;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+
+        div#time-data {
+            position: fixed;
+            right: 0;
+            left: 0;
+            margin-right: auto;
+            margin-left: auto;
+            width: 400px;
+
+            cursor: default;
+            text-transform: uppercase;
+            text-align: center;
+            color: #fff;
+            background-color: #6496c8;
+            text-shadow: -1px 1px #417cb8;
+            border: none;
+            display: none;
+            margin-top: 10px;
+            padding: 4px 24px;
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.8;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        button.flat {
+            cursor: pointer;
+            color: #fff;
+            background-color: #6496c8;
+            text-shadow: -1px 1px #417cb8;
+            border: none;
+
+            display: block;
+            float: right;
+            margin: 10px;
+            padding: 4px 24px;
+            font-size: 36px;
+            font-family: 'Acme', sans-serif;
+            line-height: 1.8;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        button.flat:hover {
+            background-color: #346392;
+            text-shadow: -1px 1px #27496d;
+        }
+
+        button.flat:active {
+            background-color: #27496d;
+            text-shadow: -1px 1px #193047;
+        }
+
+        button.flat:focus {
+            outline: none
+        }
+
+        body {
+            margin: 0;
+            background-color: #5A7684;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="interstitial-wrapper"></div>
+
+    <section class="overlay">
+
+        <div id="time-data">
+            <div id="play" style="display: none;top: 20px;position: absolute;left: 34px;cursor: pointer;">
+                <svg height="48px" id="Layer_1" style="enable-background:new 0 0 48 48;display: inline-block;fill: white;" version="1.1" viewBox="0 0 512 512" width="48px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M405.2,232.9L126.8,67.2c-3.4-2-6.9-3.2-10.9-3.2c-10.9,0-19.8,9-19.8,20H96v344h0.1c0,11,8.9,20,19.8,20  c4.1,0,7.5-1.4,11.2-3.4l278.1-165.5c6.6-5.5,10.8-13.8,10.8-23.1C416,246.7,411.8,238.5,405.2,232.9z"></path></svg>
+            </div>
+
+            <div id="pause" style="display: inline-block;top: 20px;position: absolute;left: 34px;cursor: pointer;">
+                <svg height="48px" id="Layer_1" style="enable-background:new 0 0 48 48;display: inline-block;fill: white;" version="1.1" viewBox="0 0 512 512" width="48px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">            <g><path d="M224,435.8V76.1c0-6.7-5.4-12.1-12.2-12.1h-71.6c-6.8,0-12.2,5.4-12.2,12.1v359.7c0,6.7,5.4,12.2,12.2,12.2h71.6   C218.6,448,224,442.6,224,435.8z"/><path d="M371.8,64h-71.6c-6.7,0-12.2,5.4-12.2,12.1v359.7c0,6.7,5.4,12.2,12.2,12.2h71.6c6.7,0,12.2-5.4,12.2-12.2V76.1   C384,69.4,378.6,64,371.8,64z"/></g>
+                </svg>
+            </div>
+
+
+
+            <h1>Seconds remaining: <span id="time-remaining"></span></h1>
+
+        </div>
+        <div id="creature-data">
+            <h1>Creature Data</h1>
+            <p>Creature ID: <span id="creature-index"></span></p>
+            <p>Generation: <span id="generation"></span></p>
+            <p>Amount of Joints: <span id="amount-of-joints"></span></p>
+            <p>Amount of Muscles: <span id="amount-of-muscles"></span></p>
+            <p>Internal Clock: <span id="internal-clock"></span></p>
+            <p>Muscle State: <span id="muscle-state"></span></p>
+            <p>Average Muscle Strength: <span id="average-muscle-strength"></span></p>
+            <p>Average Joint Friction: <span id="average-joint-friction"></span></p>
+            <p>Highscore: <span id="highscore"></span></p>
+            <p>Current Distance: <span id="distance"></span></p>
+
+        </div>
+
+        <div id="setup">
+            <h1 style="font-size: 28px;text-align: center;">Welcome to the Evolution Simulator<span id="creature-index"></span></h1>
+            <h3>Randomizer Settings:</h3>
+            <p>AUTOMATE: <input type="checkbox" id="config-automate"></p>
+            <p>TIMER_LENGTH: <input id="config-timer-length"></p>
+            <p>AMOUNT_OF_SPECIES:<input id="config-amount-of-speices"></p>
+            <p>MIN_HEARTBEAT: <input id="config-min-heartbeat"></p>
+            <p>MAX_HEARTBEAT:<input id="config-max-heartbeat"></p>
+            <p>MIN_STRENGTH:<input id="config-min-strength"></p>
+            <p>MAX_STRENGTH:<input id="config-max-strength"></p>
+            <p>MIN_AMOUNT_OF_JOINTS:<input id="config-min-amount-of-joints"></p>
+            <p>MAX_AMOUNT_OF_JOINTS:<input id="config-max-amount-of-joints"></p>
+            <p>MIN_FRICTION:<input id="config-min-friction"></p>
+            <p>MAX_FRICTION:<input id="config-max-friction"></p>
+            <p>MIN_AMOUNT_OF_CONNECTIONS_PER_JOINT:<input id="config-min-amount-of-connections-per-joint"></p>
+            <p>MAX_AMOUNT_OF_CONNECTIONS_PER_JOINT:<input id="config-max-amount-of-connections-per-joint"></p>
+            <p>JOINT_SPAWN_WIDTH:<input id="config-spawn-width"></p>
+            <p>JOINT_SPAWN_HEIGHT:<input id="config-spawn-height"></p>
+            <p>MIN_EXPANDED_MUSCLE_LENGTH:<input id="config-min-expanded-muscle-length"></p>
+            <p>MAX_EXPANDED_MUSCLE_LENGTH:<input id="config-max-expanded-muscle-length"></p>
+            <p>MIN_CONTRACTED_MUSCLE_LENGTH:<input id="config-min-contracted-muscle-length"></p>
+            <p>MAX_CONTRACTED_MUSCLE_LENGTH:<input id="config-max-contracted-muscle-length"></p>
+
+            <button class="flat" id="start-simulation">Start Simulation</button><br>
+
+        </div>
+
+
+        <div id="data-process">
+            <h1 style="font-size: 28px;text-align: center;">Lets crunch some numbers!!!<span id="creature-index"></span></h1>
+            <div id="chart_div" style="margin: auto; width: 900px; height: 500px;"></div>
+            <button class="flat" id="sort-creatures">Sort Creatures</button>
+            <button style="display:none" class="flat" id="kill-creatures">Kill the Weak</button>
+            <button style="display:none" class="flat" id="reproduce-creatures">Reproduce Creatures</button>
+            <button style="display:none" class="flat" id="continue-simulation">Continue Simulation</button>
+
+        </div>
+
+        <button class="flat" id="next-creature-button">Next Creature</button><br>
+    </section>
+
+
+    <script src="./index.js"></script>
+
+</body>
+
+</html>
